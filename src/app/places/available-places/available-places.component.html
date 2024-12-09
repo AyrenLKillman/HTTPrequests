@@ -1,4 +1,8 @@
 <app-places-container title="Available Places">
+  @if (isFeching()) {
+    <p class="fallback-text">Fetching Available places...</p>
+  }
+
   @if (places()) {
   <app-places [places]="places()!" />
   } @else if (places()?.length === 0) {

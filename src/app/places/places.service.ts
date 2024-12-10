@@ -40,14 +40,29 @@ export class PlacesService {
     return this.httpClient.put('http://localhost:3000/user-places', {
       placeId: place.id,}).pipe(
         catchError(error => {
-          this.errorService.showError('Failed to Store Selected place :(')
           this.userPlaces.set(prevPlaces)
+          this.errorService.showError('Failed to Store Selected place :(')
           return throwError(() => new Error('Failed to Store Selected place :('))
         })
       );
   }
 
-  removeUserPlace(place: Place) {}
+  removeUserPlace(place: Place) {
+    const prevPlaces = this.userPlaces();
+
+    if (prevPlaces.some((p) => p.id === place.id)) {
+      this.userPlaces.set(prevPlaces.filter(p => p.id !== place.id));
+    }
+
+    return this.httpClient.delete('http://localhost:3000/user/places/' + place.id)
+    .pipe(
+      catchError(error => {
+        this.userPlaces.set(prevPlaces)
+        this.errorService.showError('Failed to Remove Selected place :(')
+        return throwError(() => new Error('Failed to Remove Selected place :('))
+      })
+    )
+  }
 
   private fetchPlaces(url: string, errorMessage:string) {
     return this.httpClient.get<{places: Place[] }>(url)

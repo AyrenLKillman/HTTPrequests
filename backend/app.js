@@ -68,6 +68,10 @@ app.put("/user-places", async (req, res) => {
 });
 
 app.delete("/user-places/:id", async (req, res) => {
+
+    //?return res.status(500).json();
+  //! PURPOSEFUL ERROR HERE^ for if you wanna test some error code
+  
   const placeId = req.params.id;
 
   const userPlacesFileContent = await fs.readFile("./data/user-places.json");
